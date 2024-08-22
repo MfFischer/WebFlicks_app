@@ -1,22 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Movies</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}User Movies{% endblock %}
+
+{% block content %}
     <h1>Movies for User ID: {{ user_id }}</h1>
     <ul>
         {% for movie in movies %}
-            <li>{{ movie }}
-                <a href="{{ url_for('update_movie', user_id=user_id, movie_id=loop.index) }}">Edit</a>
-                <form action="{{ url_for('delete_movie', user_id=user_id, movie_id=loop.index) }}" method="post" style="display:inline;">
+            <li>
+                <img src="{{ movie['poster_url'] }}" alt="{{ movie['movie_name'] }}" style="width:100px;height:auto;">
+                <strong>{{ movie['movie_name'] }}</strong><br>
+                Lead Actor: {{ movie['lead_actor'] }}<br>
+                Release Date: {{ movie['release_date'] }}<br>
+                IMDb Rating: {{ movie['imdb_rating'] }}<br>
+                <a href="{{ movie['imdb_url'] }}" target="_blank">View on IMDb</a><br>
+                <a href="{{ url_for('update_movie', user_id=user_id, movie_id=movie['id']) }}">Edit</a>
+                <form action="{{ url_for('delete_movie', user_id=user_id, movie_id=movie['id']) }}" method="post" style="display:inline;">
                     <button type="submit">Delete</button>
                 </form>
             </li>
         {% endfor %}
     </ul>
     <a href="{{ url_for('add_movie', user_id=user_id) }}">Add New Movie</a>
-</body>
-</html>
+{% endblock %}

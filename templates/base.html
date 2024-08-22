@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MovieWeb App{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>MovieWeb App</h1>
+        {% if session.get('user_id') %}
+            <nav>
+                <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
+                <button onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+            </nav>
+        {% else %}
+            <nav>
+                <button onclick="location.href='{{ url_for('home') }}'">Home</button>
+                <button onclick="location.href='{{ url_for('login') }}'">Login</button>
+            </nav>
+        {% endif %}
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

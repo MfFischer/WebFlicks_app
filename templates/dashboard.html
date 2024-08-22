@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ session['user_name'] }}!</h1>
+    <p>What would you like to do?</p>
+    <button onclick="location.href='{{ url_for('user_movies', user_id=session['user_id']) }}'">View Movies</button>
+    <button onclick="location.href='{{ url_for('add_movie', user_id=session['user_id']) }}'">Add Movie</button>
+    <button onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+</body>
+</html>
