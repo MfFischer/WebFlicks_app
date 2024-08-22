@@ -21,13 +21,13 @@ def list_users():
 
 
 # Route for adding a new user via a POST request (JSON API)
-@app.route('/users', methods=['POST'])
+@app.route('/add_user', methods=['GET', 'POST'])
 def add_user():
-    user_name = request.json.get('name')
-    if not user_name:
-        return jsonify({"error": "Name is required"}), 400
-    user_id = data_manager.add_user(user_name)
-    return jsonify({"id": user_id, "name": user_name}), 201
+    if request.method == 'POST':
+        user_name = request.form['name']
+        data_manager.add_user(user_name)
+        return redirect(url_for('list_users'))
+    return render_template('add_user.html')
 
 
 # Route for viewing a specific user's movies
@@ -54,6 +54,7 @@ def update_movie(user_id, movie_id):
         new_movie_name = request.form['movie_name']
         data_manager.update_movie(movie_id, new_movie_name)
         return redirect(url_for('user_movies', user_id=user_id))
+    # Pre-fill form with existing movie data (if available)
     return render_template('update_movie.html', user_id=user_id, movie_id=movie_id)
 
 
