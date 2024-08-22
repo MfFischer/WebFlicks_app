@@ -1,11 +1,11 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from datamanager.sqlite_data_manager import SQLiteDataManager
 
 # Initialize the Flask application
 app = Flask(__name__)
 
 # Initialize the SQLiteDataManager with the database path
-data_manager = SQLiteDataManager('moviwebgit addapp.db')  # Use the appropriate path to your database
+data_manager = SQLiteDataManager('moviwebapp.db')  # Use the appropriate path to your database
 
 
 @app.route('/')
@@ -13,14 +13,14 @@ def home():
     return "Welcome to MovieWeb App!"
 
 
-@app.route('/users', methods=['GET'])
-def get_users():
+# Route for listing all users in HTML format
+@app.route('/users')
+def list_users():
     users = data_manager.get_all_users()
-    # Convert the list of tuples to a list of dictionaries for JSON response
-    users_list = [{'id': user[0], 'name': user[1]} for user in users]
-    return jsonify(users_list)
+    return render_template('users.html', users=users)
 
 
+# Route for adding a new user via a POST request (JSON API)
 @app.route('/users', methods=['POST'])
 def add_user():
     user_name = request.json.get('name')
@@ -30,12 +30,38 @@ def add_user():
     return jsonify({"id": user_id, "name": user_name}), 201
 
 
-# New route for listing users as a string
-@app.route('/users')
-def list_users():
-    users = data_manager.get_all_users()
-    print(users)  # Print users to the console for debugging
-    return render_template('users.html', users=users)
+# Route for viewing a specific user's movies
+@app.route('/users/<int:user_id>')
+def user_movies(user_id):
+    movies = data_manager.get_user_movies(user_id)
+    return render_template('user_movies.html', user_id=user_id, movies=movies)
+
+
+# Route for adding a new movie to a user's list
+@app.route('/users/<int:user_id>/add_movie', methods=['GET', 'POST'])
+def add_movie(user_id):
+    if request.method == 'POST':
+        movie_name = request.form['movie_name']
+        data_manager.add_movie_for_user(user_id, movie_name)
+        return redirect(url_for('user_movies', user_id=user_id))
+    return render_template('add_movie.html', user_id=user_id)
+
+
+# Route for updating an existing movie
+@app.route('/users/<int:user_id>/update_movie/<int:movie_id>', methods=['GET', 'POST'])
+def update_movie(user_id, movie_id):
+    if request.method == 'POST':
+        new_movie_name = request.form['movie_name']
+        data_manager.update_movie(movie_id, new_movie_name)
+        return redirect(url_for('user_movies', user_id=user_id))
+    return render_template('update_movie.html', user_id=user_id, movie_id=movie_id)
+
+
+# Route for deleting a movie from a user's list
+@app.route('/users/<int:user_id>/delete_movie/<int:movie_id>', methods=['POST'])
+def delete_movie(user_id, movie_id):
+    data_manager.delete_movie(movie_id)
+    return redirect(url_for('user_movies', user_id=user_id))
 
 
 # Run the application
