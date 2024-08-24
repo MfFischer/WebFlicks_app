@@ -23,7 +23,6 @@ def home():
         return render_template('home.html')
 
 
-
 @app.route('/users')
 def list_users():
     users = data_manager.get_all_users()
@@ -137,11 +136,21 @@ def add_movie(user_id):
 @app.route('/users/<int:user_id>/update_movie/<int:movie_id>', methods=['GET', 'POST'])
 def update_movie(user_id, movie_id):
     if request.method == 'POST':
-        new_movie_name = request.form['movie_name']
-        data_manager.update_movie(movie_id, new_movie_name)
+        # Collect the updated movie details from the form
+        updated_movie_data = {
+            'movie_name': request.form['movie_name'],
+            'poster_url': request.form['poster_url'],
+            'lead_actor': request.form['lead_actor'],
+            'release_date': request.form['release_date'],
+            'imdb_rating': request.form['imdb_rating'],
+            'imdb_url': request.form['imdb_url']
+        }
+        data_manager.update_movie(movie_id, updated_movie_data)
         return redirect(url_for('user_movies', user_id=user_id))
-    # Pre-fill form with existing movie data (if available)
-    return render_template('update_movie.html', user_id=user_id, movie_id=movie_id)
+
+    # Fetch the movie details from the database to pre-fill the form
+    movie = data_manager.get_movie_by_id(movie_id)
+    return render_template('update_movie.html', user_id=user_id, movie=movie)
 
 
 # Route for deleting a movie from a user's list
@@ -149,6 +158,22 @@ def update_movie(user_id, movie_id):
 def delete_movie(user_id, movie_id):
     data_manager.delete_movie(movie_id)
     return redirect(url_for('user_movies', user_id=user_id))
+
+
+@app.errorhandler(404)
+def page_not_found():
+    """
+       Handle 404 Not Found errors.
+    """
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_server_error():
+    """
+        Handle 500 Internal Server Error.
+    """
+    return render_template('500.html'), 500
 
 
 # Run the application

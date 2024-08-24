@@ -135,21 +135,17 @@ class SQLiteDataManager:
 
     def update_movie(self, movie_id: int, new_movie_data: dict):
         """
-        Update the details of a specific movie in the SQLite database.
-
-        Args:
-            movie_id (int): The ID of the movie to be updated.
-            new_movie_data (dict): A dictionary containing the new movie details.
+            Update the details of a specific movie in the SQLite database.
         """
         session = self.Session()
         try:
             movie = session.query(Movie).filter_by(id=movie_id).one()
-            movie.movie_name = new_movie_data['movie_name']
-            movie.poster_url = new_movie_data['poster_url']
-            movie.lead_actor = new_movie_data['lead_actor']
-            movie.release_date = new_movie_data['release_date']
-            movie.imdb_rating = new_movie_data['imdb_rating']
-            movie.imdb_url = new_movie_data['imdb_url']
+            movie.movie_name = new_movie_data.get('movie_name', movie.movie_name)
+            movie.poster_url = new_movie_data.get('poster_url', movie.poster_url)
+            movie.lead_actor = new_movie_data.get('lead_actor', movie.lead_actor)
+            movie.release_date = new_movie_data.get('release_date', movie.release_date)
+            movie.imdb_rating = new_movie_data.get('imdb_rating', movie.imdb_rating)
+            movie.imdb_url = new_movie_data.get('imdb_url', movie.imdb_url)
             session.commit()
         finally:
             session.close()
@@ -165,6 +161,25 @@ class SQLiteDataManager:
         try:
             session.query(Movie).filter_by(id=movie_id).delete()
             session.commit()
+        finally:
+            session.close()
+
+    def get_movie_by_id(self, movie_id: int):
+        """
+        Fetch movie details by movie ID.
+        """
+        session = self.Session()
+        try:
+            movie = session.query(Movie).filter_by(id=movie_id).one()
+            return {
+                'id': movie.id,
+                'movie_name': movie.movie_name,
+                'poster_url': movie.poster_url,
+                'lead_actor': movie.lead_actor,
+                'release_date': movie.release_date,
+                'imdb_rating': movie.imdb_rating,
+                'imdb_url': movie.imdb_url
+            }
         finally:
             session.close()
 

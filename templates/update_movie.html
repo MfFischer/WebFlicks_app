@@ -8,8 +8,24 @@
 <body>
     <h1>Update Movie for User ID: {{ user_id }}</h1>
     <form method="POST">
-        <label for="movie_name">New Movie Name:</label>
-        <input type="text" id="movie_name" name="movie_name" required>
+        <label for="movie_name">Movie Name:</label>
+        <input type="text" id="movie_name" name="movie_name" value="{{ movie['movie_name'] }}" required><br>
+
+        <label for="poster_url">Poster URL:</label>
+        <input type="text" id="poster_url" name="poster_url" value="{{ movie['poster_url'] }}" required><br>
+
+        <label for="lead_actor">Lead Actor:</label>
+        <input type="text" id="lead_actor" name="lead_actor" value="{{ movie['lead_actor'] }}" required><br>
+
+        <label for="release_date">Release Date:</label>
+        <input type="text" id="release_date" name="release_date" value="{{ movie['release_date'] }}" required><br>
+
+        <label for="imdb_rating">IMDb Rating:</label>
+        <input type="text" id="imdb_rating" name="imdb_rating" value="{{ movie['imdb_rating'] }}" required><br>
+
+        <label for="imdb_url">IMDb URL:</label>
+        <input type="text" id="imdb_url" name="imdb_url" value="{{ movie['imdb_url'] }}" required><br>
+
         <button type="submit">Update Movie</button>
     </form>
     <a href="{{ url_for('user_movies', user_id=user_id) }}">Back to Movies List</a>

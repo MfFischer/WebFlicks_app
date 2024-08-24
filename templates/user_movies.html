@@ -13,7 +13,8 @@
                 Release Date: {{ movie['release_date'] }}<br>
                 IMDb Rating: {{ movie['imdb_rating'] }}<br>
                 <a href="{{ movie['imdb_url'] }}" target="_blank">View on IMDb</a><br>
-                <a href="{{ url_for('update_movie', user_id=user_id, movie_id=movie['id']) }}">Edit</a>
+                <!-- Corrected the link to point to 'update_movie' -->
+                <a href="{{ url_for('update_movie', user_id=user_id, movie_id=movie['id']) }}">Update</a>
                 <form action="{{ url_for('delete_movie', user_id=user_id, movie_id=movie['id']) }}" method="post" style="display:inline;">
                     <button type="submit">Delete</button>
                 </form>
