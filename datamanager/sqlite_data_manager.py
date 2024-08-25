@@ -1,9 +1,14 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
+import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 from werkzeug.security import generate_password_hash
+from .data_model import Base, User, Movie
 
-# Define the base class for ORM models
-Base = declarative_base()
+# Define the path to the database
+DATABASE_PATH = os.path.join(os.path.dirname(__file__), 'moviwebapp.db')
+
+# Create the database engine as a global variable
+engine = create_engine(f'sqlite:///{DATABASE_PATH}')
 
 
 class SQLiteDataManager:
@@ -11,21 +16,15 @@ class SQLiteDataManager:
     A data manager class for handling SQLite database operations using SQLAlchemy.
     """
 
-    def __init__(self, db_path: str):
+    def __init__(self):
         """
-        Initialize the SQLiteDataManager with the path to the SQLite database.
-
-        Args:
-            db_path (str): Path to the SQLite database file.
+        Initialize the SQLiteDataManager.
         """
-        # Create the database engine
-        self.engine = create_engine(f'sqlite:///{db_path}')
-
         # Bind the sessionmaker to the engine
-        self.Session = scoped_session(sessionmaker(bind=self.engine))
+        self.Session = scoped_session(sessionmaker(bind=engine))
 
         # Create all tables in the database if they don't exist
-        Base.metadata.create_all(self.engine)
+        Base.metadata.create_all(engine)
 
     def add_user(self, user_data: dict):
         """
@@ -135,7 +134,11 @@ class SQLiteDataManager:
 
     def update_movie(self, movie_id: int, new_movie_data: dict):
         """
-            Update the details of a specific movie in the SQLite database.
+        Update the details of a specific movie in the SQLite database.
+
+        Args:
+            movie_id (int): The ID of the movie to update.
+            new_movie_data (dict): A dictionary containing the new movie details.
         """
         session = self.Session()
         try:
@@ -167,6 +170,12 @@ class SQLiteDataManager:
     def get_movie_by_id(self, movie_id: int):
         """
         Fetch movie details by movie ID.
+
+        Args:
+            movie_id (int): The ID of the movie to retrieve.
+
+        Returns:
+            Dict: A dictionary containing the movie details.
         """
         session = self.Session()
         try:
@@ -184,25 +193,5 @@ class SQLiteDataManager:
             session.close()
 
 
-# Define the User ORM model
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    first_name = Column(String, nullable=False)
-    last_name = Column(String, nullable=False)
-    birthdate = Column(String, nullable=False)  # Consider storing as Date instead of String
-    email = Column(String, unique=True, nullable=False)
-    password_hash = Column(String, nullable=False)
-
-
-# Define the Movie ORM model
-class Movie(Base):
-    __tablename__ = 'movies'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)  # ForeignKey linking to User
-    movie_name = Column(String, nullable=False)
-    poster_url = Column(String)
-    lead_actor = Column(String)
-    release_date = Column(String)
-    imdb_rating = Column(String)
-    imdb_url = Column(String)
+# The SQLiteDataManager can now be instantiated without needing to pass a db_path
+data_manager = SQLiteDataManager()

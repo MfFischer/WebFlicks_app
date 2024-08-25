@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Needed for flashing messages
 
 # Initialize the SQLiteDataManager with the database path
-data_manager = SQLiteDataManager('datamanager/moviwebapp.db')
+data_manager = SQLiteDataManager()
 
 OMDB_API_KEY = 'd5ee8f11'
 
@@ -80,6 +80,7 @@ def login():
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:
+        flash('Please log in.')
         return redirect(url_for('login'))
     return render_template('dashboard.html')
 
@@ -161,7 +162,7 @@ def delete_movie(user_id, movie_id):
 
 
 @app.errorhandler(404)
-def page_not_found():
+def page_not_found(e):
     """
        Handle 404 Not Found errors.
     """
@@ -169,7 +170,7 @@ def page_not_found():
 
 
 @app.errorhandler(500)
-def internal_server_error():
+def internal_server_error(e):
     """
         Handle 500 Internal Server Error.
     """
