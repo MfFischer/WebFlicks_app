@@ -3,11 +3,29 @@
 {% block title %}User List - MovieWeb App{% endblock %}
 
 {% block content %}
-    <h1>List of Users</h1>
-    <ul>
+<div class="container-md">
+    <h1 class="page-title">List of Users</h1>
+
+    <!-- Search Bar (Optional) -->
+    <div class="search-bar">
+        <input type="text" placeholder="Search users..." id="userSearch" onkeyup="searchUsers()">
+    </div>
+
+    <!-- User List -->
+    <div class="user-list">
         {% for user in users %}
-            <li>{{ user['first_name'] }} {{ user['last_name'] }}</li>
+            <div class="user-card">
+                <div class="user-info">
+                    <h2>{{ user['first_name'] }} {{ user['last_name'] }}</h2>
+                    <p>{{ user['email'] }}</p>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
-    <a href="{{ url_for('add_user') }}">Add New User</a>
+    </div>
+
+    <!-- Add New User Button -->
+    <div class="add-user">
+        <a href="{{ url_for('add_user') }}" class="btn btn-primary">Add New User</a>
+    </div>
+</div>
 {% endblock %}

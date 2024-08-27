@@ -1,33 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Movie</title>
-</head>
-<body>
-    <h1>Update Movie for User ID: {{ user_id }}</h1>
-    <form method="POST">
-        <label for="movie_name">Movie Name:</label>
-        <input type="text" id="movie_name" name="movie_name" value="{{ movie['movie_name'] }}" required><br>
+{% extends "base.html" %}
 
-        <label for="poster_url">Poster URL:</label>
-        <input type="text" id="poster_url" name="poster_url" value="{{ movie['poster_url'] }}" required><br>
+{% block title %}Update Movie - MovieWeb App{% endblock %}
 
-        <label for="lead_actor">Lead Actor:</label>
-        <input type="text" id="lead_actor" name="lead_actor" value="{{ movie['lead_actor'] }}" required><br>
+{% block content %}
+<div class="container container-md">
+    <div class="form-wrapper">
+        <form method="POST" class="form-container">
+            <div class="form-group">
+                <label for="movie_name">Movie Name:</label>
+                <input type="text" id="movie_name" name="movie_name" value="{{ movie.movie_name }}" required>
+            </div>
 
-        <label for="release_date">Release Date:</label>
-        <input type="text" id="release_date" name="release_date" value="{{ movie['release_date'] }}" required><br>
+            <div class="form-group">
+                <label for="poster_url">Poster URL:</label>
+                <input type="url" id="poster_url" name="poster_url" value="{{ movie.poster_url }}">
+            </div>
 
-        <label for="imdb_rating">IMDb Rating:</label>
-        <input type="text" id="imdb_rating" name="imdb_rating" value="{{ movie['imdb_rating'] }}" required><br>
+            <div class="form-group">
+                <label for="lead_actor">Lead Actor:</label>
+                <input type="text" id="lead_actor" name="lead_actor" value="{{ movie.lead_actor }}">
+            </div>
 
-        <label for="imdb_url">IMDb URL:</label>
-        <input type="text" id="imdb_url" name="imdb_url" value="{{ movie['imdb_url'] }}" required><br>
+            <div class="form-group">
+                <label for="release_date">Release Date:</label>
+                <input type="date" id="release_date" name="release_date" value="{{ movie.release_date }}">
+            </div>
 
-        <button type="submit">Update Movie</button>
-    </form>
-    <a href="{{ url_for('user_movies', user_id=user_id) }}">Back to Movies List</a>
-</body>
-</html>
+            <div class="form-group">
+                <label for="imdb_rating">IMDb Rating:</label>
+                <input type="text" id="imdb_rating" name="imdb_rating" value="{{ movie.imdb_rating }}">
+            </div>
+
+            <div class="form-group">
+                <label for="imdb_url">IMDb URL:</label>
+                <input type="url" id="imdb_url" name="imdb_url" value="{{ movie.imdb_url }}">
+            </div>
+
+            <button type="submit" class="btn">Update Movie</button>
+        </form>
+    </div>
+    <div class="add-movie">
+        <a href="{{ url_for('user_movies', user_id=user_id) }}" class="btn">Back to Movies</a>
+    </div>
+</div>
+{% endblock %}

@@ -3,6 +3,10 @@
 {% block title %}Server Error{% endblock %}
 
 {% block content %}
-<h1>500 - Internal Server Error</h1>
-<p>Oops, something went wrong. Please try again later or return to <a href="{{ url_for('home') }}">home page</a>.</p>
+<div class="error-container">
+    <h1>500 - Internal Server Error</h1>
+    <p>Oops, something went wrong on our end. Please try again later or return to the home page.</p>
+    <img src="{{ url_for('static', filename='images/error-icon.png') }}" alt="Error" class="error-icon">
+    <a href="{{ url_for('home') }}" class="btn btn-error">Return Home</a>
+</div>
 {% endblock %}

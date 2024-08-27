@@ -29,12 +29,6 @@ class SQLiteDataManager:
     def add_user(self, user_data: dict):
         """
         Add a new user to the SQLite database.
-
-        Args:
-            user_data (dict): A dictionary containing user details (first_name, last_name, birthdate, email, password).
-
-        Returns:
-            int: The ID of the newly created user.
         """
         session = self.Session()
         try:
@@ -55,9 +49,6 @@ class SQLiteDataManager:
     def get_all_users(self):
         """
         Retrieve all users from the SQLite database.
-
-        Returns:
-            List[Dict]: A list of dictionaries containing user details.
         """
         session = self.Session()
         try:
@@ -69,12 +60,6 @@ class SQLiteDataManager:
     def get_user_by_email(self, email: str):
         """
         Retrieve a user from the database by their email.
-
-        Args:
-            email (str): The email of the user.
-
-        Returns:
-            User: The User object if found, otherwise None.
         """
         session = self.Session()
         try:
@@ -86,12 +71,6 @@ class SQLiteDataManager:
     def get_user_movies(self, user_id: int):
         """
         Retrieve all movies associated with a specific user from the SQLite database.
-
-        Args:
-            user_id (int): The ID of the user.
-
-        Returns:
-            List[Dict]: A list of dictionaries containing movie details.
         """
         session = self.Session()
         try:
@@ -111,10 +90,6 @@ class SQLiteDataManager:
     def add_movie_for_user(self, user_id: int, movie_data: dict):
         """
         Add a movie to a specific user's movie list in the SQLite database.
-
-        Args:
-            user_id (int): The ID of the user.
-            movie_data (dict): A dictionary containing movie details.
         """
         session = self.Session()
         try:
@@ -135,10 +110,6 @@ class SQLiteDataManager:
     def update_movie(self, movie_id: int, new_movie_data: dict):
         """
         Update the details of a specific movie in the SQLite database.
-
-        Args:
-            movie_id (int): The ID of the movie to update.
-            new_movie_data (dict): A dictionary containing the new movie details.
         """
         session = self.Session()
         try:
@@ -156,9 +127,6 @@ class SQLiteDataManager:
     def delete_movie(self, movie_id: int):
         """
         Delete a specific movie from the SQLite database.
-
-        Args:
-            movie_id (int): The ID of the movie to be deleted.
         """
         session = self.Session()
         try:
@@ -170,12 +138,6 @@ class SQLiteDataManager:
     def get_movie_by_id(self, movie_id: int):
         """
         Fetch movie details by movie ID.
-
-        Args:
-            movie_id (int): The ID of the movie to retrieve.
-
-        Returns:
-            Dict: A dictionary containing the movie details.
         """
         session = self.Session()
         try:
@@ -190,6 +152,32 @@ class SQLiteDataManager:
                 'imdb_url': movie.imdb_url
             }
         finally:
+            session.close()
+
+    def search_user_movies(self, user_id, search_query):
+        """
+        Search for movies belonging to a specific user that match a search query.
+        """
+        session = self.Session()
+        try:
+            # Query movies for the user, filtering by the search query in a case-insensitive manner.
+            movies = session.query(Movie).filter(
+                Movie.user_id == user_id,
+                Movie.movie_name.ilike(f'%{search_query}%')
+            ).all()
+
+            # Return a list of dictionaries with relevant movie details.
+            return [{
+                'id': movie.id,
+                'movie_name': movie.movie_name,
+                'poster_url': movie.poster_url,
+                'lead_actor': movie.lead_actor,
+                'release_date': movie.release_date,
+                'imdb_rating': movie.imdb_rating,
+                'imdb_url': movie.imdb_url
+            } for movie in movies]
+        finally:
+            # Ensure the session is closed after the query is executed.
             session.close()
 
 

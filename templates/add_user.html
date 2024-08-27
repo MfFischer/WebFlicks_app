@@ -1,30 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New User</title>
-</head>
-<body>
-    <h1>Add New User</h1>
-    <form method="POST">
-        <label for="first_name">First Name:</label>
-        <input type="text" id="first_name" name="first_name" required><br>
+{% extends "base.html" %}
 
-        <label for="last_name">Last Name:</label>
-        <input type="text" id="last_name" name="last_name" required><br>
+{% block title %}Add New User - MovieWeb App{% endblock %}
 
-        <label for="birthdate">Birthdate:</label>
-        <input type="date" id="birthdate" name="birthdate" required><br>
+{% block content %}
+<div class="container container-sm">
+    <h1 class="page-title">Add New User</h1>
+    <form method="POST" class="form-container">
+        <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required>
+        </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br>
+        <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" required>
+        </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
+        <div class="form-group">
+            <label for="birthdate">Birthdate:</label>
+            <input type="date" id="birthdate" name="birthdate" required>
+        </div>
 
-        <button type="submit">Add User</button>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn">Add User</button>
     </form>
-    <a href="{{ url_for('list_users') }}">Back to User List</a>
-</body>
-</html>
+    <div class="add-user">
+        <a href="{{ url_for('list_users') }}" class="btn">Back to User List</a>
+    </div>
+</div>
+{% endblock %}

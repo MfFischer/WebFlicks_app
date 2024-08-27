@@ -93,11 +93,21 @@ def logout():
 
 
 # Protect movie-related routes by ensuring the user is logged in
-@app.route('/users/<int:user_id>/movies')
+@app.route('/users/<int:user_id>/movies', methods=['GET', 'POST'])
 def user_movies(user_id):
     if 'user_id' not in session or session['user_id'] != user_id:
         return redirect(url_for('login'))
+
+    # Capture the search query
+    search_query = request.args.get('search_query', '')
+
+    # Get all movies for the user
     movies = data_manager.get_user_movies(user_id)
+
+    # Filter movies if there's a search query
+    if search_query:
+        movies = [movie for movie in movies if search_query.lower() in movie['movie_name'].lower()]
+
     return render_template('user_movies.html', user_id=user_id, movies=movies)
 
 
@@ -105,9 +115,9 @@ def user_movies(user_id):
 @app.route('/users/<int:user_id>/add_movie', methods=['GET', 'POST'])
 def add_movie(user_id):
     if request.method == 'POST':
-        movie_title = request.form['movie_title']
+        movie_name = request.form['movie_name']  # Updated to match the form field name
         # Fetch movie details from OMDb API
-        omdb_url = f"http://www.omdbapi.com/?t={movie_title}&apikey={OMDB_API_KEY}"
+        omdb_url = f"http://www.omdbapi.com/?t={movie_name}&apikey={OMDB_API_KEY}"
         response = requests.get(omdb_url)
         if response.status_code == 200:
             movie_data = response.json()
@@ -130,6 +140,7 @@ def add_movie(user_id):
                 flash('Movie not found. Please try again.')
         else:
             flash('Error connecting to OMDb API.')
+
     return render_template('add_movie.html', user_id=user_id)
 
 
@@ -159,6 +170,20 @@ def update_movie(user_id, movie_id):
 def delete_movie(user_id, movie_id):
     data_manager.delete_movie(movie_id)
     return redirect(url_for('user_movies', user_id=user_id))
+
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        user = data_manager.get_user_by_email(email)
+        if user:
+            # Logic to send the reset password email
+            flash('Password reset link has been sent to your email.')
+        else:
+            flash('Email not found. Please try again.')
+        return redirect(url_for('login'))
+    return render_template('forgot_password.html')
 
 
 @app.errorhandler(404)

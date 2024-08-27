@@ -1,13 +1,45 @@
 {% extends "base.html" %}
 
-{% block title %}Add Movie - MovieWeb App{% endblock %}
+{% block title %}Add New Movie - MovieWeb App{% endblock %}
 
 {% block content %}
-<h2>Add a New Movie</h2>
-<form method="POST">
-    <label for="movie_title">Movie Title:</label>
-    <input type="text" id="movie_title" name="movie_title" required><br>
+<div class="container container-sm">
+    <h1 class="page-title">Add New Movie</h1>
+    <form method="POST" class="form-container">
+        <div class="form-group">
+            <label for="movie_name">Movie Name:</label>
+            <input type="text" id="movie_name" name="movie_name" required>
+        </div>
 
-    <button type="submit">Add Movie</button>
-</form>
+        <div class="form-group">
+            <label for="poster_url">Poster URL:</label>
+            <input type="url" id="poster_url" name="poster_url">
+        </div>
+
+        <div class="form-group">
+            <label for="lead_actor">Lead Actor:</label>
+            <input type="text" id="lead_actor" name="lead_actor">
+        </div>
+
+        <div class="form-group">
+            <label for="release_date">Release Date:</label>
+            <input type="date" id="release_date" name="release_date">
+        </div>
+
+        <div class="form-group">
+            <label for="imdb_rating">IMDb Rating:</label>
+            <input type="text" id="imdb_rating" name="imdb_rating">
+        </div>
+
+        <div class="form-group">
+            <label for="imdb_url">IMDb URL:</label>
+            <input type="url" id="imdb_url" name="imdb_url">
+        </div>
+
+        <button type="submit" class="btn">Add Movie</button>
+    </form>
+    <div class="add-movie">
+        <a href="{{ url_for('user_movies', user_id=user_id) }}" class="btn">Back to Movies</a>
+    </div>
+</div>
 {% endblock %}

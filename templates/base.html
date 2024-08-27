@@ -1,39 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MovieWeb App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
     <header>
-        <h1>MovieWeb App</h1>
-        {% if session.get('user_id') %}
-            <nav>
-                <button onclick="location.href='{{ url_for('dashboard') }}'">Back to Dashboard</button>
-                <button onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+        <div class="header-container">
+            <div class="app-name">
+                <h1>MovieWebApp</h1>
+            </div>
+            <nav class="nav-buttons">
+                {% if session.get('user_id') %}
+                    <button onclick="location.href='{{ url_for('dashboard') }}'">Dashboard</button>
+                    <button onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+                {% else %}
+                    <button onclick="location.href='{{ url_for('home') }}'">Home</button>
+                    <button onclick="location.href='{{ url_for('login') }}'">Login</button>
+                {% endif %}
             </nav>
-        {% else %}
-            <nav>
-                <button onclick="location.href='{{ url_for('home') }}'">Home</button>
-                <button onclick="location.href='{{ url_for('login') }}'">Login</button>
-            </nav>
-        {% endif %}
+        </div>
     </header>
 
     <main>
-        <!-- Flash messages block -->
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul>
-                    {% for message in messages %}
-                        <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-
         {% block content %}{% endblock %}
     </main>
 </body>
+
 </html>

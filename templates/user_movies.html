@@ -1,25 +1,42 @@
 {% extends "base.html" %}
 
-{% block title %}User Movies{% endblock %}
+{% block title %}User Movies - MovieWeb App{% endblock %}
 
 {% block content %}
-    <h1>Movies for User ID: {{ user_id }}</h1>
-    <ul>
+<div class="container container-lg">
+    <!-- Search bar -->
+    <div class="search-bar">
+        <form method="GET" action="{{ url_for('user_movies', user_id=user_id) }}">
+            <input type="text" name="search_query" placeholder="Search for a movie..." value="{{ request.args.get('search_query', '') }}" class="search-box">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </form>
+    </div>
+
+    <!-- Movies grid -->
+    <div class="movies-grid">
         {% for movie in movies %}
-            <li>
-                <img src="{{ movie['poster_url'] }}" alt="{{ movie['movie_name'] }}" style="width:100px;height:auto;">
-                <strong>{{ movie['movie_name'] }}</strong><br>
-                Lead Actor: {{ movie['lead_actor'] }}<br>
-                Release Date: {{ movie['release_date'] }}<br>
-                IMDb Rating: {{ movie['imdb_rating'] }}<br>
-                <a href="{{ movie['imdb_url'] }}" target="_blank">View on IMDb</a><br>
-                <!-- Corrected the link to point to 'update_movie' -->
-                <a href="{{ url_for('update_movie', user_id=user_id, movie_id=movie['id']) }}">Update</a>
-                <form action="{{ url_for('delete_movie', user_id=user_id, movie_id=movie['id']) }}" method="post" style="display:inline;">
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
+        <div class="movie-card">
+            <a href="{{ movie['imdb_url'] }}" target="_blank">
+                <img src="{{ movie['poster_url'] }}" alt="{{ movie['movie_name'] }}">
+            </a>
+            <div class="movie-info">
+                <h3>{{ movie['movie_name'] }}</h3>
+                <p>Lead Actor: {{ movie['lead_actor'] }}</p>
+                <p>Release Date: {{ movie['release_date'] }}</p>
+                <p>IMDb Rating: {{ movie['imdb_rating'] }}</p>
+                <div class="movie-actions">
+                    <a href="{{ url_for('update_movie', user_id=user_id, movie_id=movie['id']) }}" class="btn">Update</a>
+                    <form action="{{ url_for('delete_movie', user_id=user_id, movie_id=movie['id']) }}" method="post" class="inline-form">
+                        <button type="submit" class="btn btn-secondary">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
-    <a href="{{ url_for('add_movie', user_id=user_id) }}">Add New Movie</a>
+    </div>
+
+    <div class="add-movie">
+        <a href="{{ url_for('add_movie', user_id=user_id) }}" class="btn">Add New Movie</a>
+    </div>
+</div>
 {% endblock %}

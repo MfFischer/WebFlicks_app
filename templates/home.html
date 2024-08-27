@@ -3,22 +3,24 @@
 {% block title %}Welcome to MovieWeb App!{% endblock %}
 
 {% block content %}
+<div class="center-box">
     <h1>Welcome to MovieWeb App!</h1>
 
     {% if session.get('user_name') %}
         <p>Welcome, {{ session.get('user_name') }}!</p>
-        <div>
-            <button onclick="location.href='{{ url_for('list_users') }}'">View Users</button>
-            <button onclick="location.href='{{ url_for('add_user') }}'">Add New User</button>
-            <button onclick="location.href='{{ url_for('user_movies', user_id=session['user_id']) }}'">View My Movies</button>
-            <button onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+        <div class="button-group">
+            <button class="btn" onclick="location.href='{{ url_for('list_users') }}'">View Users</button>
+            <button class="btn" onclick="location.href='{{ url_for('add_user') }}'">Add New User</button>
+            <button class="btn" onclick="location.href='{{ url_for('user_movies', user_id=session['user_id']) }}'">View My Movies</button>
+            <button class="btn" onclick="location.href='{{ url_for('logout') }}'">Logout</button>
         </div>
     {% else %}
         <p>Select an option below:</p>
-        <div>
-            <button onclick="location.href='{{ url_for('list_users') }}'">View Users</button>
-            <button onclick="location.href='{{ url_for('add_user') }}'">Add New User</button>
-            <button onclick="location.href='{{ url_for('login') }}'">Login</button>
+        <div class="button-group">
+            <button class="btn" onclick="location.href='{{ url_for('list_users') }}'">View Users</button>
+            <button class="btn" onclick="location.href='{{ url_for('add_user') }}'">Add New User</button>
+            <button class="btn" onclick="location.href='{{ url_for('login') }}'">Login</button>
         </div>
     {% endif %}
+</div>
 {% endblock %}
