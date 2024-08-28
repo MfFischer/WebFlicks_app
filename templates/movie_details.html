@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Movie Details{% endblock %}
+
+{% block content %}
+<div class="container container-md text-center">
+    <h1 class="page-title">{{ movie.movie_name }}</h1>
+    <img src="{{ movie.poster_url }}" alt="{{ movie.movie_name }}" class="img-fluid my-4">
+    <div class="movie-detail">
+        <p><strong>Lead Actor:</strong> {{ movie.lead_actor }}</p>
+        <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+        <p><strong>IMDb Rating:</strong> {{ movie.imdb_rating }}</p>
+        <p><strong>IMDb URL:</strong> <a href="{{ movie.imdb_url }}" target="_blank">{{ movie.imdb_url }}</a></p>
+    </div>
+    <div class="reviews-section">
+        <h2>Reviews</h2>
+        {% if movie.reviews %}
+            <ul class="list-group">
+                {% for review in movie.reviews %}
+                    <li class="list-group-item">
+                        <p><strong>{{ review.user_name }}:</strong></p>
+                        <p>{{ review.review_text }}</p>
+                        <p><strong>Rating:</strong> {{ review.rating }}/10</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No reviews yet.</p>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('add_review', movie_id=movie.id) }}" class="btn btn-primary my-4">Add Review</a>
+</div>
+{% endblock %}

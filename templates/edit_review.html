@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Review{% endblock %}
+
+{% block content %}
+<div class="container container-sm">
+    <h1 class="page-title">Edit Review</h1>
+
+    <!-- Display movie name -->
+    <h2>{{ review.movie.movie_name }}</h2>
+
+    <form method="POST" class="form-container">
+        <div class="form-group">
+            <label for="review_text">Review:</label>
+            <textarea id="review_text" name="review_text" required>{{ review.review_text }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="rating">Rating:</label>
+            <input type="number" id="rating" name="rating" min="1" max="10" value="{{ review.rating }}" required>
+        </div>
+
+        <button type="submit" class="btn">Update Review</button>
+    </form>
+
+    <!-- Link back to movie details page -->
+    <div class="add-movie">
+        <a href="{{ url_for('movie_details', movie_id=review.movie_id) }}" class="btn btn-secondary">Back to Movie Details</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}All Reviews for {{ movie.movie_name }}{% endblock %}
+
+{% block content %}
+<div class="container container-md">
+    <h1 class="page-title">All Reviews for {{ movie.movie_name }}</h1>
+    <ul class="reviews-list">
+        {% for review in reviews %}
+        <li class="review-item">
+            <p><strong>{{ review.user.first_name }}:</strong> {{ review.rating }}/10</p>
+            <p>{{ review.review_text }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('movie_details', movie_id=movie.id) }}" class="btn btn-secondary">Back to Movie Details</a>
+</div>
+{% endblock %}

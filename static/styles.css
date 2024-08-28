@@ -112,6 +112,15 @@ header h1 {
 
 .container-md {
     max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.text-center {
+    text-align: center;
 }
 
 .container-lg {
@@ -157,7 +166,7 @@ form button:hover {
     max-width: 500px;
     margin: 0 auto;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -165,7 +174,11 @@ form button:hover {
 .form-group {
     margin-bottom: 15px;
 }
-
+.form-rating {
+    width: 30%;
+    margin-bottom: 5px;
+    color: #2D2424;
+}
 .form-group label {
     display: block;
     margin-bottom: 5px;
@@ -173,7 +186,7 @@ form button:hover {
 }
 
 .form-group input {
-    width: 100%;
+    width: 60px;
     padding: 10px;
     border: 1px solid #B85C38;
     border-radius: 5px;
@@ -262,6 +275,12 @@ form button:hover {
 .movie-info p {
     color: #E0C097;
     margin: 5px 0;
+}
+
+.movie-detail {
+    font-size: 1.2rem;
+    color: #2D2424;
+    color: #2D2424;
 }
 
 .movie-card:hover {
@@ -393,35 +412,35 @@ form button:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0; /* No gap between the elements */
+    gap: 0;
 }
 
 .search-box {
-    width: 250px; /* Adjust width as needed */
+    width: 250px;
     padding: 10px;
     border: 1px solid #B85C38;
-    border-radius: 5px 0 0 5px;  /* Rounded left corners */
+    border-radius: 5px 0 0 5px;
     font-size: 1rem;
-    box-sizing: border-box; /* Ensure padding doesn't affect width */
-    margin: 0; /* Remove margin to prevent wrapping */
+    box-sizing: border-box;
+    margin: 0;
 }
 
 .search-bar button {
     padding: 10px 20px;
     border: 1px solid #B85C38;
-    border-radius: 0 5px 5px 0;  /* Rounded right corners */
+    border-radius: 0 5px 5px 0;
     background-color: #2D2424;
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin: 0; /* Remove margin to prevent wrapping */
+    margin: 0;
 }
 
 .search-bar button:hover {
     background-color: #5C3D2E;
 }
 header {
-    background-color: #E0C097; /* Yellow color for the header background */
+    background-color: #E0C097;
     color: #2D2424;
     padding: 10px 20px;
     text-align: center;
@@ -440,11 +459,11 @@ header {
     font-family: 'Lora', serif;
     margin: 0;
     font-size: 1.5rem;
-    color: #2D2424; /* Dark color for app name */
+    color: #2D2424;
 }
 
 .nav-buttons button {
-    background-color: #2D2424; /* Dark button color */
+    background-color: #2D2424;
     color: #fff;
     border: none;
     padding: 10px 15px;
@@ -455,5 +474,104 @@ header {
 }
 
 .nav-buttons button:hover {
-    background-color: #5C3D2E; /* Slightly lighter hover effect */
+    background-color: #5C3D2E;
+}
+
+/* Add styles for reviews */
+.reviews-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+}
+/* Review text area styling */
+.textarea-review {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #B85C38;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    resize: vertical;
+}
+.review-item {
+    background-color: #5C3D2E;
+    color: #E0C097;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.review-item p {
+    margin: 5px 0;
+}
+
+.movie-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Button styling for smaller buttons */
+.btn-small {
+    padding: 8px 15px;
+    color: #fff;
+    background-color: #2D2424;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background-color 0.3s;
+    margin-right: 5px;
+}
+
+.btn-small-delete {
+    padding: 8px 15px;
+    color: #fff;
+    background-color: #B85C38;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background-color 0.3s;
+}
+
+.btn-small:hover,
+.btn-small-delete:hover {
+    background-color: #5C3D2E;
+}
+
+/* Align movie actions in a line */
+.movie-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+/* Reviews Section Styling */
+.reviews-section {
+    margin-top: 10px;
+}
+
+.reviews-section h4 {
+    margin-bottom: 5px;
+    font-size: 1.125rem;
+}
+
+.reviews-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.reviews-section li {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+.review-actions {
+    margin-top: 5px;
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
 }
