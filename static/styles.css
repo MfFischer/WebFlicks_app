@@ -575,3 +575,45 @@ header {
     justify-content: flex-start;
     gap: 10px;
 }
+/* Existing styles */
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 20px; /* Add this line to create space below the buttons */
+}
+
+.button-group a,
+.button-group form button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #2D2424;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.button-group a:hover,
+.button-group form button:hover {
+    background-color: #5C3D2E;
+}
+
+/* Style specifically for the delete button */
+.button-group form button {
+    background-color: #B85C38;
+}
+
+.button-group form button:hover {
+    background-color: #7A2C2E;
+}
+
+/* Additional margin for spacing between sections */
+.button-group + a.btn {
+    margin-top: 20px; /* Add space above the "Back to Movie Details" button */
+}

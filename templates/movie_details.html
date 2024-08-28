@@ -29,5 +29,6 @@
         {% endif %}
     </div>
     <a href="{{ url_for('add_review', movie_id=movie.id) }}" class="btn btn-primary my-4">Add Review</a>
+    <a href="{{ url_for('all_reviews', movie_id=movie.id) }}" class="btn btn-secondary my-4">View All Reviews</a>
 </div>
 {% endblock %}

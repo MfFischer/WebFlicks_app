@@ -1,12 +1,18 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 import requests
+from flask_cors import CORS
 from datamanager.data_model import Review, Base
 from datamanager.sqlite_data_manager import SQLiteDataManager
 from datetime import datetime
 from werkzeug.security import check_password_hash
+from api import api
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Needed for flashing messages
+# Needed for flashing messages
+app.secret_key = 'your_secret_key'
+
+# Enable CORS for the application
+CORS(app)
 
 # Initialize the SQLiteDataManager with the database path
 data_manager = SQLiteDataManager()
@@ -14,32 +20,38 @@ data_manager = SQLiteDataManager()
 # Create all tables in the database if they don't exist
 Base.metadata.create_all(data_manager.engine)
 
+# Register the API blueprint with a URL prefix
+app.register_blueprint(api, url_prefix='/api')
+
+# OMDb API key
 OMDB_API_KEY = 'd5ee8f11'
 
 
 @app.route('/')
 def home():
+    """Render the home page or redirect to the dashboard
+    if the user is logged in."""
     if 'user_id' in session:
-        # Get the user's name from the session if logged in
-        user_name = session.get('user_name')
         return redirect(url_for('dashboard'))
-    else:
-        return render_template('home.html')
+    return render_template('home.html')
 
 
 @app.route('/users')
 def list_users():
+    """Render the page with the list of all users."""
     users = data_manager.get_all_users()
     return render_template('users.html', users=users)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """Handle user registration."""
     if request.method == 'POST':
         user_data = {
             'first_name': request.form['first_name'],
             'last_name': request.form['last_name'],
-            'birthdate': datetime.strptime(request.form['birthdate'], '%Y-%m-%d').date(),
+            'birthdate': datetime.strptime(request.form['birthdate'],
+                                           '%Y-%m-%d').date(),
             'email': request.form['email'],
             'password': request.form['password']
         }
@@ -51,6 +63,7 @@ def register():
 
 @app.route('/add_user', methods=['GET', 'POST'])
 def add_user():
+    """Handle adding a new user."""
     if request.method == 'POST':
         user_data = {
             'first_name': request.form['first_name'],
@@ -67,6 +80,7 @@ def add_user():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Handle user login."""
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -83,6 +97,7 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
+    """Render the dashboard page."""
     if 'user_id' not in session:
         flash('Please log in.')
         return redirect(url_for('login'))
@@ -91,36 +106,36 @@ def dashboard():
 
 @app.route('/logout')
 def logout():
+    """Handle user logout."""
     session.clear()
     flash('You have been logged out.')
     return redirect(url_for('home'))
 
 
-# Protect movie-related routes by ensuring the user is logged in
 @app.route('/users/<int:user_id>/movies', methods=['GET', 'POST'])
 def user_movies(user_id):
+    """Render the page with a user's movies and handle search functionality."""
     if 'user_id' not in session or session['user_id'] != user_id:
         return redirect(url_for('login'))
 
-    # Capture the search query
     search_query = request.args.get('search_query', '')
-
-    # Get all movies for the user
     movies = data_manager.get_user_movies(user_id)
 
-    # Filter movies if there's a search query
     if search_query:
-        movies = [movie for movie in movies if search_query.lower() in movie['movie_name'].lower()]
+        movies = [
+            movie for movie in movies
+            if search_query.lower() in movie['movie_name'].lower()
+        ]
 
-    return render_template('user_movies.html', user_id=user_id, movies=movies)
+    return render_template('user_movies.html',
+                           user_id=user_id, movies=movies)
 
 
-# Route for adding a new movie to a user's list
 @app.route('/users/<int:user_id>/add_movie', methods=['GET', 'POST'])
 def add_movie(user_id):
+    """Handle adding a new movie to a user's list."""
     if request.method == 'POST':
-        movie_name = request.form['movie_name']  # Updated to match the form field name
-        # Fetch movie details from OMDb API
+        movie_name = request.form['movie_name']
         omdb_url = f"http://www.omdbapi.com/?t={movie_name}&apikey={OMDB_API_KEY}"
         response = requests.get(omdb_url)
         if response.status_code == 200:
@@ -134,10 +149,7 @@ def add_movie(user_id):
                     'imdb_rating': movie_data['imdbRating'],
                     'imdb_url': f"https://www.imdb.com/title/{movie_data['imdbID']}/"
                 }
-
-                # Save to the database (pass the dictionary)
                 data_manager.add_movie_for_user(user_id, movie_details)
-
                 flash('Movie added successfully!')
                 return redirect(url_for('user_movies', user_id=user_id))
             else:
@@ -145,14 +157,15 @@ def add_movie(user_id):
         else:
             flash('Error connecting to OMDb API.')
 
-    return render_template('add_movie.html', user_id=user_id)
+    return render_template('add_movie.html',
+                           user_id=user_id)
 
 
-# Route for updating an existing movie
-@app.route('/users/<int:user_id>/update_movie/<int:movie_id>', methods=['GET', 'POST'])
+@app.route('/users/<int:user_id>/update_movie/<int:movie_id>',
+           methods=['GET', 'POST'])
 def update_movie(user_id, movie_id):
+    """Handle updating an existing movie."""
     if request.method == 'POST':
-        # Collect the updated movie details from the form
         updated_movie_data = {
             'movie_name': request.form['movie_name'],
             'poster_url': request.form['poster_url'],
@@ -164,25 +177,26 @@ def update_movie(user_id, movie_id):
         data_manager.update_movie(movie_id, updated_movie_data)
         return redirect(url_for('user_movies', user_id=user_id))
 
-    # Fetch the movie details from the database to pre-fill the form
     movie = data_manager.get_movie_by_id(movie_id)
-    return render_template('update_movie.html', user_id=user_id, movie=movie)
+    return render_template('update_movie.html',
+                           user_id=user_id, movie=movie)
 
 
-# Route for deleting a movie from a user's list
-@app.route('/users/<int:user_id>/delete_movie/<int:movie_id>', methods=['POST'])
+@app.route('/users/<int:user_id>/delete_movie/<int:movie_id>',
+           methods=['POST'])
 def delete_movie(user_id, movie_id):
+    """Handle deleting a movie from a user's list."""
     data_manager.delete_movie(movie_id)
     return redirect(url_for('user_movies', user_id=user_id))
 
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
+    """Handle forgot password functionality."""
     if request.method == 'POST':
         email = request.form['email']
         user = data_manager.get_user_by_email(email)
         if user:
-            # Logic to send the reset password email
             flash('Password reset link has been sent to your email.')
         else:
             flash('Email not found. Please try again.')
@@ -192,30 +206,30 @@ def forgot_password():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    """
-       Handle 404 Not Found errors.
-    """
+    """Handle 404 Not Found errors."""
     return render_template('404.html'), 404
 
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    """
-        Handle 500 Internal Server Error.
-    """
+    """Handle 500 Internal Server Error."""
     return render_template('500.html'), 500
 
 
 @app.route('/movies/<int:movie_id>/reviews', methods=['GET', 'POST'])
-@app.route('/movies/<int:movie_id>/reviews', methods=['GET', 'POST'])
 def add_review(movie_id):
+    """Handle adding a review to a movie."""
     if request.method == 'POST':
         review_text = request.form['review_text']
         rating = request.form['rating']
-        user_id = session['user_id']  # Assuming the user is logged in and their ID is stored in the session
+        user_id = session['user_id']
 
-        # Create a new review
-        review = Review(user_id=user_id, movie_id=movie_id, review_text=review_text, rating=rating)
+        review = Review(
+            user_id=user_id,
+            movie_id=movie_id,
+            review_text=review_text,
+            rating=rating
+        )
         session_db = data_manager.Session()
         session_db.add(review)
         session_db.commit()
@@ -224,11 +238,14 @@ def add_review(movie_id):
         flash('Review added successfully!')
         return redirect(url_for('movie_details', movie_id=movie_id))
 
-    return render_template('add_review.html', movie_id=movie_id)
+    return render_template('add_review.html',
+                           movie_id=movie_id)
 
 
-@app.route('/movies/<int:movie_id>/reviews/<int:review_id>/delete', methods=['POST'])
+@app.route('/movies/<int:movie_id>/reviews/<int:review_id>/delete',
+           methods=['POST'])
 def delete_review(movie_id, review_id):
+    """Handle deleting a review."""
     session_db = data_manager.Session()
     review = session_db.query(Review).filter_by(id=review_id).first()
 
@@ -243,19 +260,22 @@ def delete_review(movie_id, review_id):
 
 @app.route('/review/<int:review_id>/edit', methods=['GET', 'POST'])
 def edit_review(review_id):
+    """Handle editing an existing review."""
     review = data_manager.get_review_by_id(review_id)
     if request.method == 'POST':
         review_text = request.form['review_text']
-        rating = int(request.form['rating'])  # Convert rating to an integer
+        rating = int(request.form['rating'])
         data_manager.update_review(review_id, review_text, rating)
         flash('Review updated successfully!')
-        return redirect(url_for('movie_details', movie_id=review.movie_id))
+        return redirect(url_for('movie_details',
+                                movie_id=review.movie_id))
 
     return render_template('edit_review.html', review=review)
 
 
 @app.route('/movie/<int:movie_id>', methods=['GET', 'POST'])
 def movie_details(movie_id):
+    """Render movie details page with associated reviews."""
     movie = data_manager.get_movie_by_id(movie_id)
     user_id = session.get('user_id')
 
@@ -271,19 +291,19 @@ def movie_details(movie_id):
         flash('Review added successfully!')
         return redirect(url_for('movie_details', movie_id=movie_id))
 
-    return render_template('movie_details.html', movie=movie, user_id=user_id)
+    return render_template('movie_details.html',
+                           movie=movie, user_id=user_id)
 
 
-@app.route('/movies/<int:movie_id>/reviews')
+@app.route('/movies/<int:movie_id>/all_reviews')
 def all_reviews(movie_id):
-    """
-    View function to display all reviews for a movie.
-    """
+    """View function to display all reviews for a movie."""
     movie = data_manager.get_movie_by_id(movie_id)
     reviews = data_manager.get_reviews_for_movie(movie_id)
 
     if movie:
-        return render_template('all_reviews.html', movie=movie, reviews=reviews)
+        return render_template('all_reviews.html',
+                               movie=movie, reviews=reviews)
     else:
         flash('Movie not found.')
         return redirect(url_for('home'))
