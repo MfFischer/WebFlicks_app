@@ -1,0 +1,6 @@
+dataManager~=0.2.2
+Flask~=3.0.3
+requests~=2.32.3
+Werkzeug~=3.0.3
+SQLAlchemy~=2.0.31
+Flask-Cors==3.0.10
