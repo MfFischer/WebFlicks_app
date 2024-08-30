@@ -137,11 +137,12 @@ header h1 {
 
 /* Form styles */
 form input, form button {
-    width: 100%;
+    width: 100%; /* Ensure input fields expand to full width */
     padding: 15px;
     margin: 10px 0;
     border: 1px solid #B85C38;
     border-radius: 5px;
+    box-sizing: border-box; /* Include padding and border in the element's width and height */
 }
 
 form input:focus {
@@ -174,28 +175,17 @@ form button:hover {
 .form-group {
     margin-bottom: 15px;
 }
+
 .form-rating {
     width: 30%;
     margin-bottom: 5px;
     color: #2D2424;
 }
+
 .form-group label {
     display: block;
     margin-bottom: 5px;
     color: #2D2424;
-}
-
-.form-group input {
-    width: 60px;
-    padding: 10px;
-    border: 1px solid #B85C38;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-.form-group input:focus {
-    border-color: #2D2424;
-    outline: none;
 }
 
 /* User list styles */
@@ -279,7 +269,6 @@ form button:hover {
 
 .movie-detail {
     font-size: 1.2rem;
-    color: #2D2424;
     color: #2D2424;
 }
 
@@ -387,6 +376,7 @@ form button:hover {
 
 .password-group input {
     padding-right: 10px;
+    width: 100%; /* Ensure the input field expands */
 }
 
 .toggle-password {
@@ -439,6 +429,7 @@ form button:hover {
 .search-bar button:hover {
     background-color: #5C3D2E;
 }
+
 header {
     background-color: #E0C097;
     color: #2D2424;
@@ -483,6 +474,7 @@ header {
     padding: 0;
     margin: 20px 0;
 }
+
 /* Review text area styling */
 .textarea-review {
     width: 100%;
@@ -493,6 +485,7 @@ header {
     box-sizing: border-box;
     resize: vertical;
 }
+
 .review-item {
     background-color: #5C3D2E;
     color: #E0C097;
@@ -575,6 +568,7 @@ header {
     justify-content: flex-start;
     gap: 10px;
 }
+
 /* Existing styles */
 
 .button-group {
